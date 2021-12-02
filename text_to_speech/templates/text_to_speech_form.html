@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Text To Speech{% endblock title %}
+
+{% block content %}
+    <br>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-sm-6">
+                <h2 style="text-align:center;">Text To Speech</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <form method="POST">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button class="btn btn-primary">Convert</button>
+                            <br>
+                            {% if audio %}
+                                <audio id="audio" controls autoplay src="{{ audio.url }}"></audio>
+                            {% endif %}
+                        </form>
+                        <br>
+                    </div>
+                </div>
+            </div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Nội dung</th>
+                    <th scope="col">Thời lượng</th>
+                    <th scope="col">Nghe</th>
+                    <th scope="col">Tải xuống</th>
+                    <th scope="col">Thời gian</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for file in audio_list %}
+                    <tr>
+                        <th scope="row">{{ file.text }}</th>
+                        <th scope="row">{{ file.due_time }} sec</th>
+                        <th scope="row">
+                            <input type="button" value="PLAY" onclick="play('{{ file.audio.url }}')">
+                            <audio id="{{ file.audio.url }}"
+                                   src="{{ file.audio.url }}"></audio>
+
+                        </th>
+                        <th scope="row"><a href="{{ file.audio.url }}" download> Download </a></th>
+                        <th scope="row">{{ file.create_date }}</th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% if audio_list.has_other_pages %}
+                <ul class="pagination">
+                    {% if audio_list.has_previous %}
+                        <li><a href="?page={{ audio_list.previous_page_number }}">&laquo;</a></li>
+                    {% else %}
+                        <li class="disabled"><span>&laquo;</span></li>
+                    {% endif %}
+                    {% for i in audio_list.paginator.page_range %}
+                        {% if audio_list.number == i %}
+                            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                        {% else %}
+                            <li><a href="?page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if audio_list.has_next %}
+                        <li><a href="?page={{ audio_list.next_page_number }}">&raquo;</a></li>
+                    {% else %}
+                        <li class="disabled"><span>&raquo;</span></li>
+                    {% endif %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function play(url) {
+            const audio = document.getElementById(url);
+            audio.play(url);
+        }
+    </script>
+
+{% endblock content %}
