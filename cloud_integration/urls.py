@@ -9,8 +9,10 @@ from rest_framework_simplejwt.views import (
 
 app_name = 'cloud_integration'
 urlpatterns = [
-    path('', views.HomePage.as_view(), name='home_page'),
+    path('', views.HomePage.as_view(), name='Home'),
     path('login', views.UserLoginView.as_view(), name='login'),
+    path('register', views.UserRegistrationView.as_view(), name='register'),
+    path('logout', views.UserLogoutView.as_view(), name='logout'),
     path('api/token', TokenObtainPairView.as_view(), name='token_obtain_pair'),
 ]
 

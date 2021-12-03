@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock title %}
+{% block content %}
+<br>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-body">
+            <h2 style="text-align:center;">Đăng kí</h2>
+            <br>
+            <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-primary">Đăng kí</button>
+            <br>
+            </form>
+            <br>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

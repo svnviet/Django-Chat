@@ -13,6 +13,7 @@ class StoreAudio(models.Model):
     create_date = models.DateTimeField()
     audio = models.FileField(upload_to='audios/')
     text = models.CharField(max_length=500)
+
     # length = models.FloatField(blank=True)
 
     # def change_speed_audio(self, speed):
@@ -36,7 +37,7 @@ class StoreAudio(models.Model):
         audio_tmp = self.audio
         audio_info = mutagen.File(audio_tmp).info
         self.due_time = audio_info.length
-        self.save()
+        # self.update(due_time=audio_info.length)
 
     def speed_change(self, speed=1.0):
         # Manually override the frame_rate. This tells the computer how many

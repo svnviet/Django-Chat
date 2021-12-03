@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-# from .models import Film, Showtime, Seat, Booking, Customer
 from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -7,6 +6,8 @@ from django.http import HttpResponseRedirect
 from django.views.generic import View, CreateView, FormView
 from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login, logout
+from .forms import UserRegistrationForm
+from .models import Customer
 
 from .forms import UserLoginForm
 
@@ -17,10 +18,31 @@ class HomePage(View):
         return render(request, 'audio_play.html')
 
 
+class UserRegistrationView(CreateView):
+    form_class = UserRegistrationForm
+    template_name = "register.html"
+    success_url = reverse_lazy("cloud_integration:Home")
+
+    def form_valid(self, form):
+        username = form.cleaned_data.get("username")
+        password = form.cleaned_data.get("password")
+        email = form.cleaned_data.get("email")
+        user = User.objects.create_user(username, email, password)
+        form.instance.user = user
+        login(self.request, user)
+        return super().form_valid(form)
+
+
+class UserLogoutView(View):
+    def get(self, request):
+        logout(request)
+        return redirect("cloud_integration:Home")
+
+
 class UserLoginView(FormView):
     form_class = UserLoginForm
     template_name = "login.html"
-    success_url = reverse_lazy("Home")
+    success_url = reverse_lazy("cloud_integration:Home")
 
     def form_valid(self, form):
         uname = form.cleaned_data.get("username")

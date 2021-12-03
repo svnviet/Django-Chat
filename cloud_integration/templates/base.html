@@ -71,6 +71,9 @@
         <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'cloud_integration:Home' %}">Trang chủ</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="/texttospeech">Tổng hợp giọng nói</a>
                 </li>
                 <li class="nav-item">
@@ -81,12 +84,12 @@
                 </li>
                 {% if request.user.customer %}
                     <li class="nav-item">
-                        <a class="nav-link" href="">Đăng xuất</a>
+                        <a class="nav-link" href="{% url 'cloud_integration:logout' %}">Đăng xuất</a>
                     </li>
                 {% else %}
-                    {#                    <li class="nav-item">#}
-                    {#                        <a class="nav-link" href="{% url 'register' %}">Đăng kí</a>#}
-                    {#                    </li>#}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cloud_integration:register' %}">Đăng kí</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'cloud_integration:login' %}">Đăng nhập</a>
                     </li>

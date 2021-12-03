@@ -6,7 +6,8 @@ import google.cloud.texttospeech as tts
 from django.core.files.base import ContentFile
 from datetime import datetime
 from django.contrib.auth.models import User
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+import random
 
 voice_list = [{'id': 1, 'name': 'A - Giọng Nữ - Miền Bắc', 'code': 'vi-VN-Standard-A', 'gender': 'FEMALE'},
               {'id': 2, 'name': 'B - Giọng Nam - Miền Bắc', 'code': 'vi-VN-Standard-B', 'gender': 'MALE'},
@@ -24,7 +25,7 @@ class TextToSpeechFormView(FormView):
     success_url = '#'
 
     def form_valid(self, form):
-        audio_list = StoreAudio.objects.filter().order_by('-id')
+        audio_list = StoreAudio.objects.filter().order_by('-create_date')
         page = self.request.GET.get('page', 1) if self.request.method != 'POST' else 1
         paginator = Paginator(audio_list, 10)
         try:
@@ -40,7 +41,7 @@ class TextToSpeechFormView(FormView):
             speed = form.cleaned_data['speed']
             filename = f"{datetime.now()}.mp3"
             audio = ContentFile(audio_bytes, name=filename)
-            new_obj = StoreAudio.objects.create(audio=audio, create_date=datetime.now(), due_time=0.00, text=context)
+            new_obj = StoreAudio.objects.create(audio=audio, create_date=datetime.now(), due_time=0.00, text=context, id=random.randint(1,10))
             new_obj.update_audio_duration_seconds()
         else:
             my_form = TextToSpeechForm()
