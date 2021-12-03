@@ -8,11 +8,15 @@ from pydub import AudioSegment
 # Create your models here.
 
 class StoreAudio(models.Model):
-    # user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     due_time = models.FloatField(blank=True)
-    create_date = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     audio = models.FileField(upload_to='audios/')
     text = models.CharField(max_length=500)
+
+    class Meta:
+        db_table = 'text_to_speech_store_audio'
 
     # length = models.FloatField(blank=True)
 

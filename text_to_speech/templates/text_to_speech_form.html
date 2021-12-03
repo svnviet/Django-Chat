@@ -9,14 +9,36 @@
                 <h2 style="text-align:center;">Text To Speech</h2>
                 <div class="card">
                     <div class="card-body">
-                        <form method="POST">
+                        {#                        <form method="POST">#}
+                        {#                            {% csrf_token %}#}
+                        {#                            {{ form.as_p }}#}
+                        {#                        </form>#}
+                        {#                        <br/>#}
+                        <form method="POST" class="text-to-speech-form">
                             {% csrf_token %}
-                            {{ form.as_p }}
-                            <button class="btn btn-primary">Convert</button>
-                            <br>
-                            {% if audio %}
-                                <audio id="audio" controls autoplay src="{{ audio.url }}"></audio>
-                            {% endif %}
+                            <div class="form-group row">
+                                <div class="col-sm-2 col-form-label">Voice</div>
+                                <div class="col-sm-10">
+                                    {{ form.voice }}
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-2 col-form-label">Tốc độ</div>
+                                <div class="col-sm-10">
+                                    {{ form.speed }}
+                                </div>
+                            </div>
+                            <div>
+                                {{ form.content }}
+                            </div>
+                            <div>
+                                <button class="btn btn-primary">Convert</button>
+                            </div>
+                            <div>
+                                {% if audio %}
+                                    <audio id="audio" controls autoplay src="{{ audio.url }}"></audio>
+                                {% endif %}
+                            </div>
                         </form>
                         <br>
                     </div>
@@ -25,6 +47,7 @@
             <table class="table">
                 <thead>
                 <tr>
+                    {#                    <th>123</th>#}
                     <th scope="col">Nội dung</th>
                     <th scope="col">Thời lượng</th>
                     <th scope="col">Nghe</th>
@@ -35,6 +58,7 @@
                 <tbody>
                 {% for file in audio_list %}
                     <tr>
+                        {#                        <th scope="row">{{ file.user_id }}</th>#}
                         <th scope="row">{{ file.text }}</th>
                         <th scope="row">{{ file.due_time }} sec</th>
                         <th scope="row">
@@ -44,7 +68,7 @@
 
                         </th>
                         <th scope="row"><a href="{{ file.audio.url }}" download> Download </a></th>
-                        <th scope="row">{{ file.create_date }}</th>
+                        <th scope="row">{{ file.created_at|date:"Y-m-d H:i:s" }}</th>
                     </tr>
                 {% endfor %}
                 </tbody>

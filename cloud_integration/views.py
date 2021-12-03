@@ -6,10 +6,8 @@ from django.http import HttpResponseRedirect
 from django.views.generic import View, CreateView, FormView
 from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login, logout
-from .forms import UserRegistrationForm
+from .forms import UserRegistrationForm, UserLoginForm
 from .models import Customer
-
-from .forms import UserLoginForm
 
 
 class HomePage(View):
