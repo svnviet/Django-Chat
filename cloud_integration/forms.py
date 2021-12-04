@@ -9,11 +9,11 @@ class UserRegistrationForm(forms.ModelForm):
     email = forms.CharField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
     full_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     phone = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    address = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    # address = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Customer
-        fields = ["username", "full_name", "email", "phone", "address", "password"]
+        fields = ["username", "full_name", "email", "phone", "password"]
 
     def clean_username(self):
         uname = self.cleaned_data.get("username").lower()

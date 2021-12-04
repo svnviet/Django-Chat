@@ -107,17 +107,6 @@ WSGI_APPLICATION = "voice.wsgi.application"
 #     }
 # }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'djongo',
-#         'NAME': 'callbot_db',
-#         'HOST': '14.225.18.25',
-#         'PORT': 16542,
-#         'USER': 'callbot_user',
-#         'PASS': 'azkjHk1Ua7k'
-#     }
-# }
-
 DATABASES = {
         'default': {
             'ENGINE': 'djongo',
