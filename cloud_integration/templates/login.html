@@ -11,25 +11,8 @@
                         <br>
                         <form method="POST">
                             {% csrf_token %}
-                            <div class="card-body">
-                                <form method="POST">
-                                    <input type="hidden" name="csrfmiddlewaretoken"
-                                           value="6iotXO9R2alzR3C4BondnuZAlfMY3rgo5JDMSOfIZ0lujoLx0TsLqO9rq7sLZ41q">
-                                    <div>
-                                        <div style="color: #212529; padding-top: 15px" for="id_username">Username:</div>
-                                        {{ form.username }}</div>
-                                    <div>
-                                        <div style="color: #212529; padding-top: 15px; " for="id_password">Password:</div>
-                                        {{ form.password }}</div>
-                                    <div style="padding: 20px">
-                                        <button style="padding: 10px" class="btn btn-primary">Đăng nhập</button>
-                                    </div>
-                                    <br>
-
-                                </form>
-                                <br>
-                            </div>
-                            {#                            <button class="btn btn-primary">Đăng nhập</button>#}
+                            {{ form.as_p }}
+                            <button class="btn btn-primary">Đăng nhập</button>
                             <br>
                             {% if error %}
                                 <li style="color:red">{{ error }}</li>
