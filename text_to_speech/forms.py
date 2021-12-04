@@ -11,7 +11,7 @@ VoiceList = [(1, 'A - Giọng Nữ - Miền Bắc'),
              (7, 'C - Giọng Nữ - Miền Nam'),
              (8, 'D - Giọng Nam - Miền Nam')]
 
-SpeedList = [(0, 'LOW'), (1, 'TB'), (2, 'QK')]
+SpeedList = [(0.25, '0.25'), (0.5, '0.5'), (0.75, '0.75'), (1, '1'), (1.25, '1.25'), (1.5, '1.5'), (1.75, '1.75'), (2, '2')]
 
 
 class TextToSpeechForm(forms.Form):
