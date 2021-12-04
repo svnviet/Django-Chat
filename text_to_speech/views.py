@@ -4,7 +4,7 @@ from .forms import TextToSpeechForm
 from .models import StoreAudio
 import google.cloud.texttospeech as tts
 from django.core.files.base import ContentFile
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import random
@@ -44,7 +44,8 @@ class TextToSpeechFormView(FormView):
             filename = f"{datetime.now()}.mp3"
             context = form.cleaned_data['content']
             audio = ContentFile(audio_bytes, name=filename)
-            new_obj = StoreAudio.objects.create(audio=audio, due_time=0.00, text=context, user_id=self.request.user)
+            new_obj = StoreAudio.objects.create(audio=audio, due_time=0.00, text=context, user_id=self.request.user,
+                                                created_at=datetime.now() + timedelta(hours=7))
             new_obj.update_audio_duration_seconds()
         else:
             my_form = TextToSpeechForm()

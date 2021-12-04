@@ -24,6 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-o=48b+ur^%_2!c$!pira3i#+kh)*=l@9p=9wl^lgbv7q19y_i("
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(BASE_DIR) + "/voice/tts-stt-333207-5e9571abcce6.json"
 API_EN = "api/v1/"
+TIME_ZONE = "Asia/Ho_Chi_Minh"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -98,38 +99,38 @@ WSGI_APPLICATION = "voice.wsgi.application"
 #     }
 # }
 #
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'djongo',
-#         'NAME': 'voice',
-#         'HOST': '127.0.0.1',
-#         'PORT': 27017,
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'callbot_db',
-        'ENFORCE_SCHEMA': False,
-        'CLIENT': {
-            'host': '14.225.18.25',
-            'port': 16542,
-            'username': 'callbot_user',
-            'password': 'azkjHk1Ua7k',
-            'authSource': 'callbot_db',
-        },
-        'LOGGING': {
-            'version': 1,
-            'loggers': {
-                'djongo': {
-                    'level': 'DEBUG',
-                    'propagate': False,
-                }
-            },
-        },
+        'NAME': 'voice',
+        'HOST': '127.0.0.1',
+        'PORT': 27017,
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'djongo',
+#         'NAME': 'callbot_db',
+#         'ENFORCE_SCHEMA': False,
+#         'CLIENT': {
+#             'host': '14.225.18.25',
+#             'port': 16542,
+#             'username': 'callbot_user',
+#             'password': 'azkjHk1Ua7k',
+#             'authSource': 'callbot_db',
+#         },
+#         'LOGGING': {
+#             'version': 1,
+#             'loggers': {
+#                 'djongo': {
+#                     'level': 'DEBUG',
+#                     'propagate': False,
+#                 }
+#             },
+#         },
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

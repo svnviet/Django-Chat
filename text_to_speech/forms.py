@@ -20,6 +20,7 @@ class TextToSpeechForm(forms.Form):
         self.fields['voice'].label = "Giọng đọc"
         self.fields['speed'].label = "Tốc độ"
         self.fields['content'].label = "Nội dung"
+        self.fields['speed'].initial = "1"
 
     voice = forms.ChoiceField(choices=VoiceList)
     speed = forms.ChoiceField(choices=SpeedList)
