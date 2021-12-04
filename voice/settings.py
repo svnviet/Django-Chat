@@ -28,7 +28,7 @@ API_EN = "api/v1/"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['call.fchat.ai']
+ALLOWED_HOSTS = ['call.fchat.ai', '127.0.0.1']
 
 # Application definition
 
@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     "cloud_integration",
     "text_to_speech",
     "rest_framework",
-   ]
+]
 
 # REST_FRAMEWORK = {
 #     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -117,7 +117,6 @@ DATABASES = {
 #         'PASS': 'azkjHk1Ua7k'
 #     }
 # }
-
 
 
 # Password validation

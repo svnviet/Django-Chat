@@ -9,7 +9,7 @@ from pydub import AudioSegment
 
 class StoreAudio(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    due_time = models.FloatField(blank=True)
+    due_time = models.DecimalField(max_digits=100, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     audio = models.FileField(upload_to='audios/')

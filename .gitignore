@@ -4,3 +4,5 @@ media
 logo_salemall.png
 #voice/settings.py
 .gitignore
+db.sqlite3
+*migrations*
