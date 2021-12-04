@@ -17,7 +17,7 @@ class UserRegistrationForm(forms.ModelForm):
 
     def clean_username(self):
         uname = self.cleaned_data.get("username").lower()
-        if len(uname) >= 6:
+        if len(uname) <= 6:
             raise forms.ValidationError("Username need at least 6 characters")
         if User.objects.filter(username=uname).exists():
             raise forms.ValidationError("Username already exists.")
