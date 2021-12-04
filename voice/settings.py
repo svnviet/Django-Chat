@@ -91,12 +91,12 @@ WSGI_APPLICATION = "voice.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": str(BASE_DIR) + "/db.sqlite3",
-#     }
-# }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": str(BASE_DIR) + "/db.sqlite3",
+    }
+}
 #
 # DATABASES = {
 #     'default': {
@@ -107,16 +107,16 @@ WSGI_APPLICATION = "voice.wsgi.application"
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'djongo',
-        'NAME': 'callbot_db',
-        'HOST': '14.225.18.25',
-        'PORT': 16542,
-        'USER': 'callbot_user',
-        'PASS': 'azkjHk1Ua7k'
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'djongo',
+#         'NAME': 'callbot_db',
+#         'HOST': '14.225.18.25',
+#         'PORT': 16542,
+#         'USER': 'callbot_user',
+#         'PASS': 'azkjHk1Ua7k'
+#     }
+# }
 
 
 
