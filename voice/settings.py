@@ -28,7 +28,7 @@ API_EN = "api/v1/"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['call.fchat.ai']
 
 # Application definition
 
