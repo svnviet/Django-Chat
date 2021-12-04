@@ -41,7 +41,7 @@ class StoreAudio(models.Model):
         audio_tmp = self.audio
         audio_info = mutagen.File(audio_tmp).info
         self.due_time = audio_info.length
-        # self.update(due_time=audio_info.length)
+        self.save()
 
     def speed_change(self, speed=1.0):
         # Manually override the frame_rate. This tells the computer how many
