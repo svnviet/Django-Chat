@@ -40,10 +40,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.humanize",
     "django.contrib.staticfiles",
+    "cloud_integration",
+    "text_to_speech",
+    "rest_framework",
    ]
-# "cloud_integration",
-# "text_to_speech",
-# "rest_framework",
 
 # REST_FRAMEWORK = {
 #     'DEFAULT_AUTHENTICATION_CLASSES': [
