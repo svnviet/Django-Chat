@@ -1,5 +1,5 @@
 *.pyc
 media
-requirements.txt
+#requirements.txt
 logo_salemall.png
 voice/settings.py
