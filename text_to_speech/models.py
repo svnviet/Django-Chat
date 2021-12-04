@@ -3,6 +3,13 @@ from django.contrib.auth.models import User
 from datetime import datetime
 import mutagen
 from pydub import AudioSegment
+from pymongo import MongoClient
+
+try:
+    conn = MongoClient()  # Making coonection
+    db = conn.database
+except:
+    print("Could not connect to MongoDB")
 
 
 # Create your models here.
@@ -38,10 +45,13 @@ class StoreAudio(models.Model):
     # return
 
     def update_audio_duration_seconds(self):
+        collection = db.text_to_speech_store_audio
         audio_tmp = self.audio
         audio_info = mutagen.File(audio_tmp).info
         self.due_time = audio_info.length
-        self.save()
+        # filter_on = {"id": self.id, }
+        # new_values = {"$set": {'due_time': self.due_time}}
+        # collection.update_one(filter_on, new_values)
 
     def speed_change(self, speed=1.0):
         # Manually override the frame_rate. This tells the computer how many
