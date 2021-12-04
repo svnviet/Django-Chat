@@ -28,7 +28,7 @@ API_EN = "api/v1/"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['call.fchat.ai']
+ALLOWED_HOSTS = ['call.fchat.ai', '0.0.0.0']
 
 # Application definition
 
@@ -108,28 +108,28 @@ WSGI_APPLICATION = "voice.wsgi.application"
 # }
 
 DATABASES = {
-        'default': {
-            'ENGINE': 'djongo',
-            'NAME': 'callbot_db',
-            'ENFORCE_SCHEMA': False,
-            'CLIENT': {
-                'host': '14.225.18.25',
-                'port': 16542,
-                'username': 'callbot_user',
-                'password': 'azkjHk1Ua7k',
-                'authSource': 'callbot_db',
+    'default': {
+        'ENGINE': 'djongo',
+        'NAME': 'callbot_db',
+        'ENFORCE_SCHEMA': False,
+        'CLIENT': {
+            'host': '14.225.18.25',
+            'port': 16542,
+            'username': 'callbot_user',
+            'password': 'azkjHk1Ua7k',
+            'authSource': 'callbot_db',
+        },
+        'LOGGING': {
+            'version': 1,
+            'loggers': {
+                'djongo': {
+                    'level': 'DEBUG',
+                    'propagate': False,
+                }
             },
-            'LOGGING': {
-                'version': 1,
-                'loggers': {
-                    'djongo': {
-                        'level': 'DEBUG',
-                        'propagate': False,
-                    }
-                },
-             },
-        }
+        },
     }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
