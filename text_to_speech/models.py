@@ -1,9 +1,12 @@
-from django.db import models
+from djongo import models
 from django.contrib.auth.models import User
 from datetime import datetime
 import mutagen
 from pydub import AudioSegment
 from pymongo import MongoClient
+from django.utils import timezone
+from django.conf import settings
+import pytz
 
 try:
     conn = MongoClient()  # Making coonection
@@ -15,43 +18,27 @@ except:
 # Create your models here.
 
 class StoreAudio(models.Model):
+    _id = models.ObjectIdField()
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    due_time = models.DecimalField(max_digits=100, decimal_places=2)
+    due_time = models.DecimalField(max_digits=100, decimal_places=2, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    created_time_zone = models.DateTimeField()
     updated_at = models.DateTimeField(auto_now=True)
     audio = models.FileField(upload_to='audios/')
     text = models.CharField(max_length=500)
+    objects = models.DjongoManager()
 
     class Meta:
         db_table = 'text_to_speech_store_audio'
 
-    # length = models.FloatField(blank=True)
-
-    # def change_speed_audio(self, speed):
-    #     audio_tmp = self.audio
-    #     audio_info = mutagen.File(audio_tmp).info
-    #     sound = AudioSegment(
-    #         # raw audio data (bytes)
-    #         data=b'…',
-    #         # 2 byte (16 bit) samples
-    #         sample_width=2,
-    #         # 44.1 kHz frame rate
-    #         frame_rate=44100,
-    #         # stereo
-    #         channels=2
-    #     )
-
-    # self.length = audio_info
-    # return
+    # def save(self, *args, **kwargs):
+    #     super(StoreAudio, self).save(*args, **kwargs)
 
     def update_audio_duration_seconds(self):
-        collection = db.text_to_speech_store_audio
         audio_tmp = self.audio
         audio_info = mutagen.File(audio_tmp).info
         self.due_time = audio_info.length
-        # filter_on = {"id": self.id, }
-        # new_values = {"$set": {'due_time': self.due_time}}
-        # collection.update_one(filter_on, new_values)
+        self.save()
 
     def speed_change(self, speed=1.0):
         # Manually override the frame_rate. This tells the computer how many

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from djongo import models
 
 
 # Create your models here.
@@ -8,6 +9,7 @@ class Customer(models.Model):
     full_name = models.CharField(max_length=100)
     # address = models.CharField(max_length=255)
     phone = models.CharField(max_length=12)
+    objects = models.DjongoManager()
 
     def __str__(self):
         return self.full_name

@@ -10,6 +10,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import random
 from cloud_integration.views import UserLoginView
 from django.http import HttpResponseRedirect
+from django.utils import timezone
+from django.conf import settings
+import pytz
 
 voice_list = [{'id': 1, 'name': 'A - Giọng Nữ - Miền Bắc', 'code': 'vi-VN-Standard-A', 'gender': 'FEMALE'},
               {'id': 2, 'name': 'B - Giọng Nam - Miền Bắc', 'code': 'vi-VN-Standard-B', 'gender': 'MALE'},
@@ -45,8 +48,10 @@ class TextToSpeechFormView(FormView):
             context = form.cleaned_data['content']
             audio = ContentFile(audio_bytes, name=filename)
             new_obj = StoreAudio.objects.create(audio=audio, due_time=0.00, text=context, user_id=self.request.user,
-                                                created_at=datetime.now() + timedelta(hours=7))
+                                                created_time_zone=datetime.now() + timedelta(hours=7))
+            # new_obj.update_created_time_zone()
             new_obj.update_audio_duration_seconds()
+            audio_list = StoreAudio.objects.filter(user_id=self.request.user).order_by('-created_at')
         else:
             my_form = TextToSpeechForm()
             return render(self.request, self.template_name, {"audio_list": audio_list, "form": my_form})
