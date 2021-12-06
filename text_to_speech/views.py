@@ -53,7 +53,7 @@ class TextToSpeechFormView(FormView):
                 raise ('Exception service')
             audio = ContentFile(raw_data, name=filename)
             new_obj = StoreAudio.objects.create(audio=audio, text=context, user_id=self.request.user, due_time=due_time)
-            audio_list = StoreAudio.objects.filter(user_id=self.request.user).order_by('-created_at')
+            # audio_list = StoreAudio.objects.filter(user_id=self.request.user).order_by('-created_at')
         else:
             my_form = TextToSpeechForm()
             return render(self.request, self.template_name, {"audio_list": audio_list, "form": my_form})

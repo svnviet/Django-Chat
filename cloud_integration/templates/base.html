@@ -47,7 +47,7 @@
     footer h3, p {
         color: #eee;
     }
-    
+
 </style>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
@@ -61,20 +61,20 @@
         </div>
         <div class="mx-auto order-0">
         </div>
-        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+        <div class="navbar-collapse collapse w-100 order-3 dual-collapse1">
             <ul class="navbar-nav ms-auto">
-{#                <li class="nav-item">#}
-{#                    <a class="nav-link active" aria-current="page" href="{% url 'cloud_integration:Home' %}">Trang chủ</a>#}
-{#                </li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link active" aria-current="page" href="{% url 'cloud_integration:Home' %}">Trang chủ</a>#}
+                {#                </li>#}
                 <li class="nav-item">
                     <a class="nav-link" href="/text-to-speech">Tổng hợp giọng nói</a>
                 </li>
-{#                <li class="nav-item">#}
-{#                    <a class="nav-link" href="#">Hướng dẫn</a>#}
-{#                </li>#}
-{#                <li class="nav-item">#}
-{#                    <a class="nav-link" href="#">Bảng giá</a>#}
-{#                </li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link" href="#">Hướng dẫn</a>#}
+                {#                </li>#}
+                {#                <li class="nav-item">#}
+                {#                    <a class="nav-link" href="#">Bảng giá</a>#}
+                {#                </li>#}
                 {% if request.user.customer %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'cloud_integration:logout' %}">Đăng xuất</a>
