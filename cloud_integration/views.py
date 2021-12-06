@@ -13,13 +13,15 @@ from .models import Customer
 class HomePage(View):
     @staticmethod
     def get(request):
-        return render(request, 'audio_play.html')
+        return redirect("text_to_speech:text")
+
+        # return render(request, 'audio_play.html')
 
 
 class UserRegistrationView(CreateView):
     form_class = UserRegistrationForm
     template_name = "register.html"
-    success_url = reverse_lazy("cloud_integration:Home")
+    success_url = reverse_lazy("text_to_speech:text")
 
     def form_valid(self, form):
         username = form.cleaned_data.get("username")
@@ -40,7 +42,7 @@ class UserLogoutView(View):
 class UserLoginView(FormView):
     form_class = UserLoginForm
     template_name = "login.html"
-    success_url = reverse_lazy("cloud_integration:Home")
+    success_url = reverse_lazy("text_to_speech:text")
 
     def form_valid(self, form):
         uname = form.cleaned_data.get("username")
