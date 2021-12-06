@@ -44,7 +44,7 @@ class TextToSpeechFormView(FormView):
         if self.request.method == 'POST':
             my_form = TextToSpeechForm(self.request.POST)
             audio_bytes = self.text_to_speech_process(form)
-            filename = f"{datetime.now()}.wav"
+            filename = f"{datetime.now()}.mp3"
             context = form.cleaned_data['content']
             speed = form.cleaned_data['speed']
             if audio_bytes:
@@ -95,4 +95,5 @@ def speed_change(sound, speed=1):
     # samples to play per second
     # sound = AudioSegment.from_file(self.audio.path)
     source = AudioSegment(sound, sample_width=2, frame_rate=24000 * float(speed), channels=1)
-    return source, source.duration_seconds
+    # source.export()
+    return source.raw_data, source.duration_seconds
