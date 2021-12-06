@@ -10,9 +10,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import random
 from cloud_integration.views import UserLoginView
 from django.http import HttpResponseRedirect
-from django.utils import timezone
+import mutagen
+from pydub import AudioSegment
 from django.conf import settings
-import pytz
 
 voice_list = [{'id': 1, 'name': 'A - Giọng Nữ - Miền Bắc', 'code': 'vi-VN-Standard-A', 'gender': 'FEMALE'},
               {'id': 2, 'name': 'B - Giọng Nam - Miền Bắc', 'code': 'vi-VN-Standard-B', 'gender': 'MALE'},
@@ -44,13 +44,15 @@ class TextToSpeechFormView(FormView):
         if self.request.method == 'POST':
             my_form = TextToSpeechForm(self.request.POST)
             audio_bytes = self.text_to_speech_process(form)
-            filename = f"{datetime.now()}.mp3"
+            filename = f"{datetime.now()}.wav"
             context = form.cleaned_data['content']
-            audio = ContentFile(audio_bytes, name=filename)
-            new_obj = StoreAudio.objects.create(audio=audio, due_time=0.00, text=context, user_id=self.request.user,
-                                                created_time_zone=datetime.now() + timedelta(hours=7))
-            # new_obj.update_created_time_zone()
-            new_obj.update_audio_duration_seconds()
+            speed = form.cleaned_data['speed']
+            if audio_bytes:
+                raw_data, due_time = speed_change(audio_bytes, speed)
+            else:
+                raise ('Exception service')
+            audio = ContentFile(raw_data, name=filename)
+            new_obj = StoreAudio.objects.create(audio=audio, text=context, user_id=self.request.user, due_time=due_time)
             audio_list = StoreAudio.objects.filter(user_id=self.request.user).order_by('-created_at')
         else:
             my_form = TextToSpeechForm()
@@ -86,3 +88,11 @@ def text_to_speech(voice_name: str, text: str):
         input=text_input, voice=voice_params, audio_config=audio_config
     )
     return response.audio_content
+
+
+def speed_change(sound, speed=1):
+    # Manually override the frame_rate. This tells the computer how many
+    # samples to play per second
+    # sound = AudioSegment.from_file(self.audio.path)
+    source = AudioSegment(sound, sample_width=2, frame_rate=24000 * float(speed), channels=1)
+    return source, source.duration_seconds

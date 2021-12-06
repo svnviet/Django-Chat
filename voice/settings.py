@@ -24,7 +24,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-o=48b+ur^%_2!c$!pira3i#+kh)*=l@9p=9wl^lgbv7q19y_i("
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(BASE_DIR) + "/voice/tts-stt-333207-5e9571abcce6.json"
 API_EN = "api/v1/"
-TIME_ZONE_VN = "Asia/Ho_Chi_Minh"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -155,7 +154,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Ho_Chi_Minh"
 
 USE_I18N = True
 

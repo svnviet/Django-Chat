@@ -18,6 +18,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include("cloud_integration.urls")),
-    path('text-to-speech', include("text_to_speech.urls"))
+    # path('', include("cloud_integration.urls")),
+    path('', include("text_to_speech.urls"))
 ]
