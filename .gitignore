@@ -2,7 +2,7 @@
 media
 #requirements.txt
 logo_salemall.png
-#voice/settings.py
+voice/settings.py
 .gitignore
 db.sqlite3
 *migrations*
