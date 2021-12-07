@@ -13,6 +13,7 @@ from django.http import HttpResponseRedirect
 import mutagen
 from pydub import AudioSegment
 from django.conf import settings
+import os
 
 voice_list = [{'id': 1, 'name': 'A - Giọng Nữ - Miền Bắc', 'code': 'vi-VN-Standard-A', 'gender': 'FEMALE'},
               {'id': 2, 'name': 'B - Giọng Nam - Miền Bắc', 'code': 'vi-VN-Standard-B', 'gender': 'MALE'},
@@ -29,9 +30,7 @@ class TextToSpeechFormView(FormView):
     template_name = "text_to_speech_form.html"
     success_url = '#'
 
-    def form_valid(self, form):
-        if not self.request.user.is_authenticated:
-            return HttpResponseRedirect('/login')
+    def get_audio_list_page(self):
         audio_list = StoreAudio.objects.filter(user_id=self.request.user).order_by('-created_at')
         page = self.request.GET.get('page', 1) if self.request.method != 'POST' else 1
         paginator = Paginator(audio_list, 10)
@@ -41,21 +40,32 @@ class TextToSpeechFormView(FormView):
             audio_list = paginator.page(1)
         except EmptyPage:
             audio_list = paginator.page(paginator.num_pages)
+        return audio_list
+
+    def get_audio_data(self, path):
+        with open(path, 'rb') as file:
+            return file.read()
+
+    def form_valid(self, form):
+        if not self.request.user.is_authenticated:
+            return HttpResponseRedirect('/login')
         if self.request.method == 'POST':
             my_form = TextToSpeechForm(self.request.POST)
             audio_bytes = self.text_to_speech_process(form)
-            filename = f"{datetime.now()}.mp3"
+            filename = f"{datetime.now()}.wav"
             context = form.cleaned_data['content']
             speed = form.cleaned_data['speed']
             if audio_bytes:
-                raw_data, due_time = speed_change(audio_bytes, speed)
+                raw_data, due_time, file_path_speed = speed_change(audio_bytes, speed, filename)
             else:
                 raise ('Exception service')
-            audio = ContentFile(raw_data, name=filename)
+            audio = self.get_audio_data(file_path_speed)
+            audio = ContentFile(audio, name=filename.replace('.wav', '.mp3'))
             new_obj = StoreAudio.objects.create(audio=audio, text=context, user_id=self.request.user, due_time=due_time)
-            # audio_list = StoreAudio.objects.filter(user_id=self.request.user).order_by('-created_at')
+            audio_list = self.get_audio_list_page()
         else:
             my_form = TextToSpeechForm()
+            audio_list = self.get_audio_list_page()
             return render(self.request, self.template_name, {"audio_list": audio_list, "form": my_form})
         return render(
             self.request,
@@ -90,10 +100,13 @@ def text_to_speech(voice_name: str, text: str):
     return response.audio_content
 
 
-def speed_change(sound, speed=1):
+def speed_change(sound, speed=1, file_name=None):
     # Manually override the frame_rate. This tells the computer how many
     # samples to play per second
     # sound = AudioSegment.from_file(self.audio.path)
+    file_path_speed = settings.MEDIA_ROOT + f'/tmp/speed-{speed}-' + file_name
+    if not os.path.exists(settings.MEDIA_ROOT + f'/tmp'):
+        os.makedirs(settings.MEDIA_ROOT + f'/tmp')
     source = AudioSegment(sound, sample_width=2, frame_rate=24000 * float(speed), channels=1)
-    # source.export()
-    return source.raw_data, source.duration_seconds
+    source.export(file_path_speed, format='wav')
+    return source.raw_data, source.duration_seconds, file_path_speed
