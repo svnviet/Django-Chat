@@ -42,25 +42,28 @@ class TextToSpeechFormView(FormView):
             audio_list = paginator.page(paginator.num_pages)
         return audio_list
 
-    def get_audio_data(self, path):
-        with open(path, 'rb') as file:
-            return file.read()
+    @staticmethod
+    def create_audio_object(user_id, voice, speed, context):
+        filename = f"{datetime.now()}.wav"
+        audio_bytes = text_to_speech_process(voice, context)
+        if audio_bytes:
+            due_time, file_path_speed = speed_change(audio_bytes, speed, filename)
+            audio = get_audio_data(file_path_speed)
+            audio = ContentFile(audio, name=filename) #.replace('.wav', '.mp3')
+            new_obj = StoreAudio.objects.create(audio=audio, text=context, user_id=user_id, due_time=due_time,
+                                                due_time_display=duration_convert(due_time))
+            return new_obj
+        return False
 
     def form_valid(self, form):
         if not self.request.user.is_authenticated:
             return HttpResponseRedirect('/login')
         if self.request.method == 'POST':
-            my_form = TextToSpeechForm(self.request.POST)
-            filename = f"{datetime.now()}.wav"
             context = form.cleaned_data['content']
             speed = form.cleaned_data['speed']
-            audio_bytes = self.text_to_speech_process(form)
-            if audio_bytes:
-                raw_data, due_time, file_path_speed = speed_change(audio_bytes, speed, filename)
-                audio = self.get_audio_data(file_path_speed)
-                audio = ContentFile(audio, name=filename.replace('.wav', '.mp3'))
-                new_obj = StoreAudio.objects.create(audio=audio, text=context, user_id=self.request.user, due_time=due_time,
-                                                    due_time_display=self.duration_convert(due_time))
+            voice = form.cleaned_data['voice']
+            new_obj = self.create_audio_object(self.request.user, voice, speed, context)
+            if new_obj:
                 audio_list = self.get_audio_list_page()
                 my_form = TextToSpeechForm(self.request.POST)
                 return render(
@@ -75,21 +78,21 @@ class TextToSpeechFormView(FormView):
         audio_list = self.get_audio_list_page()
         return render(self.request, self.template_name, {"audio_list": audio_list, "form": my_form})
 
-    def text_to_speech_process(self, form):
-        voice = int(form.cleaned_data['voice'])
-        context = form.cleaned_data['content'] + ' .'
-        voice_code = [x.get('code').strip() for x in voice_list if x.get('id') == voice]
-        return text_to_speech(voice_code[0], context)
-
     def get(self, request, *args, **kwargs):
         return self.form_valid(False)
 
-    @staticmethod
-    def duration_convert(due_time):
-        total_seconds = int(due_time)
-        minutes = total_seconds // 60
-        seconds = total_seconds % 60
-        return f'{minutes:02d}:{seconds:02d}'
+
+def duration_convert(due_time):
+    total_seconds = int(due_time)
+    minutes = total_seconds // 60
+    seconds = total_seconds % 60
+    return f'{minutes:02d}:{seconds:02d}'
+
+
+def text_to_speech_process(voice, context):
+    voice = int(voice)
+    voice_code = [x.get('code').strip() for x in voice_list if x.get('id') == voice]
+    return text_to_speech(voice_code[0], context)
 
 
 def text_to_speech(voice_name: str, text: str):
@@ -115,4 +118,9 @@ def speed_change(sound, speed=1, file_name=None):
         os.makedirs(settings.MEDIA_ROOT + f'/tmp')
     source = AudioSegment(sound, sample_width=2, frame_rate=24000 * float(speed), channels=1)
     source.export(file_path_speed, format='wav')
-    return source.raw_data, source.duration_seconds, file_path_speed
+    return source.duration_seconds, file_path_speed
+
+
+def get_audio_data(path):
+    with open(path, 'rb') as file:
+        return file.read()

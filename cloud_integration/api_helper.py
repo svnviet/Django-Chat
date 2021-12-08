@@ -20,15 +20,15 @@ def check_permissions(func):
     def wrapper(self, *args, **kwargs):
         # Get access token from http header
         access_token = self.request.headers.get('Token')
-        # if access_token:
-        #     access_token = access_token.strip()
-        # else:
-        #     error_descrip = "No access token was provided in request header!"
-        #     return Response(handle_response_fail({'msg': error_descrip}))
-        # user_id = Token.objects.filter(key=access_token)[0].get('user_id')
-        # # user_id = User.objects.filter(id=1)[0]
-        # kwargs['user_id'] = user_id.id
-        kwargs['user_id'] = 1
+        if access_token:
+            access_token = access_token.strip()
+        else:
+            error_descrip = "No access token was provided in request!"
+            return Response(handle_response_fail({'msg': error_descrip}))
+        user_id = Token.objects.filter(key=access_token)[0].user
+        if not user_id:
+            return Response(handle_response_fail({'msg': 'Token was not correct'}))
+        kwargs['user_id'] = user_id
         return func(self, *args, **kwargs)
 
     return wrapper
