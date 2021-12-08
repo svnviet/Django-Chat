@@ -29,7 +29,7 @@
                                 </div>
                             </div>
                             <div>
-                                {{ form.content }}
+                                {{ form.content|truncatechars:500 }}
                             </div>
                             <div class="form-group row" style="padding: 10px;">
                                 {#                            <div style="padding: 10px;">#}
@@ -67,14 +67,14 @@
                     <tr>
                         {#                        <th scope="row">{{ file.user_id }}</th>#}
                         <th scope="row">{{ file.text }}</th>
-                        <th scope="row">{{ file.due_time }} sec</th>
+                        <th scope="row">{{ file.due_time_display }}</th>
                         <th scope="row">
                             <input type="button" value="PLAY" onclick="play('{{ file.audio.url }}')">
                             <audio id="{{ file.audio.url }}"
                                    src="{{ file.audio.url }}"></audio>
                         </th>
                         <th scope="row"><a href="{{ file.audio.url }}" download> Download </a></th>
-                        <th scope="row">{{ file.created_at|date:"Y-m-d H:i:s" }}</th>
+                        <th scope="row" style="min-width: 100px;">{{ file.created_at|date:"d-m-Y H:i" }}</th>
 
                     </tr>
                 {% endfor %}

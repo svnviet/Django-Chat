@@ -61,7 +61,8 @@ class TextToSpeechFormView(FormView):
                 raise ('Exception service')
             audio = self.get_audio_data(file_path_speed)
             audio = ContentFile(audio, name=filename.replace('.wav', '.mp3'))
-            new_obj = StoreAudio.objects.create(audio=audio, text=context, user_id=self.request.user, due_time=due_time)
+            new_obj = StoreAudio.objects.create(audio=audio, text=context, user_id=self.request.user, due_time=due_time,
+                                                due_time_display=self.duration_convert(due_time))
             audio_list = self.get_audio_list_page()
         else:
             my_form = TextToSpeechForm()
@@ -84,6 +85,13 @@ class TextToSpeechFormView(FormView):
 
     def get(self, request, *args, **kwargs):
         return self.form_valid(False)
+
+    @staticmethod
+    def duration_convert(due_time):
+        total_seconds = int(due_time)
+        minutes = total_seconds // 60
+        seconds = total_seconds % 60
+        return f'{minutes:02d}:{seconds:02d}'
 
 
 def text_to_speech(voice_name: str, text: str):

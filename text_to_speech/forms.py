@@ -24,4 +24,4 @@ class TextToSpeechForm(forms.Form):
 
     voice = forms.ChoiceField(choices=VoiceList)
     speed = forms.ChoiceField(choices=SpeedList)
-    content = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
+    content = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Nội dung tối đa 500 kí tự'}))
