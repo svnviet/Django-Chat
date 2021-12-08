@@ -51,31 +51,29 @@ class TextToSpeechFormView(FormView):
             return HttpResponseRedirect('/login')
         if self.request.method == 'POST':
             my_form = TextToSpeechForm(self.request.POST)
-            audio_bytes = self.text_to_speech_process(form)
             filename = f"{datetime.now()}.wav"
             context = form.cleaned_data['content']
             speed = form.cleaned_data['speed']
+            audio_bytes = self.text_to_speech_process(form)
             if audio_bytes:
                 raw_data, due_time, file_path_speed = speed_change(audio_bytes, speed, filename)
-            else:
-                raise ('Exception service')
-            audio = self.get_audio_data(file_path_speed)
-            audio = ContentFile(audio, name=filename.replace('.wav', '.mp3'))
-            new_obj = StoreAudio.objects.create(audio=audio, text=context, user_id=self.request.user, due_time=due_time,
-                                                due_time_display=self.duration_convert(due_time))
-            audio_list = self.get_audio_list_page()
-        else:
-            my_form = TextToSpeechForm()
-            audio_list = self.get_audio_list_page()
-            return render(self.request, self.template_name, {"audio_list": audio_list, "form": my_form})
-        return render(
-            self.request,
-            self.template_name,
-            {"form": my_form,
-             "audio": new_obj.audio,
-             "audio_list": audio_list,
-             },
-        )
+                audio = self.get_audio_data(file_path_speed)
+                audio = ContentFile(audio, name=filename.replace('.wav', '.mp3'))
+                new_obj = StoreAudio.objects.create(audio=audio, text=context, user_id=self.request.user, due_time=due_time,
+                                                    due_time_display=self.duration_convert(due_time))
+                audio_list = self.get_audio_list_page()
+                my_form = TextToSpeechForm(self.request.POST)
+                return render(
+                    self.request,
+                    self.template_name,
+                    {"form": my_form,
+                     "audio": new_obj.audio,
+                     "audio_list": audio_list,
+                     },
+                )
+        my_form = TextToSpeechForm()
+        audio_list = self.get_audio_list_page()
+        return render(self.request, self.template_name, {"audio_list": audio_list, "form": my_form})
 
     def text_to_speech_process(self, form):
         voice = int(form.cleaned_data['voice'])

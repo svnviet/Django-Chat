@@ -9,11 +9,6 @@
                 <h2 style="text-align:center;">Text To Speech</h2>
                 <div class="card">
                     <div class="card-body">
-                        {#                        <form method="POST">#}
-                        {#                            {% csrf_token %}#}
-                        {#                            {{ form.as_p }}#}
-                        {#                        </form>#}
-                        {#                        <br/>#}
                         <form method="POST" class="text-to-speech-form">
                             {% csrf_token %}
                             <div class="form-group row">
@@ -29,14 +24,9 @@
                                 </div>
                             </div>
                             <div>
-                                {{ form.content|truncatechars:500 }}
+                                {{ form.content }}
                             </div>
                             <div class="form-group row" style="padding: 10px;">
-                                {#                            <div style="padding: 10px;">#}
-                                {#                                <button class="btn btn-primary">Convert</button>#}
-                                {#                            </div>#}
-                                {#                            <div>#}
-                                {#                            </div>#}
                                 <div class="col-sm-2 col-form-label">
                                     <button class="btn btn-primary">Convert</button>
                                 </div>
@@ -109,6 +99,17 @@
             const audio = document.getElementById(url);
             audio.play(url);
         }
+
+        $('textarea').keyup(function () {
+            var maxlength = parseInt($(this).attr('max_length')),
+                text = $(this).val(),
+                eol = text.match(/(\r\n|\n|\r)/g),
+                count_eol = $.isArray(eol) ? eol.length : 0,//error if eol is null
+                count_chars = text.length - count_eol;
+            alert(count_chars)
+            if (maxlength && count_chars > maxlength)
+                $(this).val(text.substring(0, maxlength + count_eol));
+        });
     </script>
 
 {% endblock content %}
