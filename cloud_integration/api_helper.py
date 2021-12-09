@@ -12,7 +12,7 @@ def handle_data_response_success(data):
 
 def handle_response_fail(message):
     return ({'error': True,
-             'msg': message.get('msg'),
+             'msg': message,
              'data': {}})
 
 
@@ -24,10 +24,11 @@ def check_permissions(func):
             access_token = access_token.strip()
         else:
             error_descrip = "No access token was provided in request!"
-            return Response(handle_response_fail({'msg': error_descrip}))
+            return Response(handle_response_fail(error_descrip))
         user_id = Token.objects.filter(key=access_token)[0].user
         if not user_id:
-            return Response(handle_response_fail({'msg': 'Token was not correct'}))
+            return Response(handle_response_fail('Token was not correct'))
+        self.request.user = user_id
         kwargs['user_id'] = user_id
         return func(self, *args, **kwargs)
 

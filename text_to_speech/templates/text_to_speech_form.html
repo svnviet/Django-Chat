@@ -106,7 +106,6 @@
                 eol = text.match(/(\r\n|\n|\r)/g),
                 count_eol = $.isArray(eol) ? eol.length : 0,//error if eol is null
                 count_chars = text.length - count_eol;
-            alert(count_chars)
             if (maxlength && count_chars > maxlength)
                 $(this).val(text.substring(0, maxlength + count_eol));
         });

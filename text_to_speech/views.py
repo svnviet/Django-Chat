@@ -43,13 +43,13 @@ class TextToSpeechFormView(FormView):
         return audio_list
 
     @staticmethod
-    def create_audio_object(user_id, voice, speed, context):
+    def create_audio_object(user_id, voice_id, speed, context):
         filename = f"{datetime.now()}.wav"
-        audio_bytes = text_to_speech_process(voice, context)
+        audio_bytes = text_to_speech_process(voice_id, context)
         if audio_bytes:
             due_time, file_path_speed = speed_change(audio_bytes, speed, filename)
             audio = get_audio_data(file_path_speed)
-            audio = ContentFile(audio, name=filename) #.replace('.wav', '.mp3')
+            audio = ContentFile(audio, name=filename)  # .replace('.wav', '.mp3')
             new_obj = StoreAudio.objects.create(audio=audio, text=context, user_id=user_id, due_time=due_time,
                                                 due_time_display=duration_convert(due_time))
             return new_obj

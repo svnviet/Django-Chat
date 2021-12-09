@@ -43,16 +43,20 @@ INSTALLED_APPS = [
     "cloud_integration",
     "text_to_speech",
     "rest_framework",
+    "rest_framework.authtoken",
+    "speech_to_text",
 ]
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': [
-#         'rest_framework_simplejwt.authentication.JWTAuthentication',
-#     ],
-#     'DEFAULT_RENDERER_CLASSES': [
-#         'rest_framework.renderers.JSONRenderer',
-#     ]
-# }
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser'
+    )
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -98,38 +102,38 @@ WSGI_APPLICATION = "voice.wsgi.application"
 #     }
 # }
 #
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'djongo',
-#         'NAME': 'voice',
-#         'HOST': '127.0.0.1',
-#         'PORT': 27017,
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'callbot_db',
-        'ENFORCE_SCHEMA': False,
-        'CLIENT': {
-            'host': '14.225.18.25',
-            'port': 16542,
-            'username': 'callbot_user',
-            'password': 'azkjHk1Ua7k',
-            'authSource': 'callbot_db',
-        },
-        'LOGGING': {
-            'version': 1,
-            'loggers': {
-                'djongo': {
-                    'level': 'DEBUG',
-                    'propagate': False,
-                }
-            },
-        },
+        'NAME': 'voice',
+        'HOST': '127.0.0.1',
+        'PORT': 27017,
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'djongo',
+#         'NAME': 'callbot_db',
+#         'ENFORCE_SCHEMA': False,
+#         'CLIENT': {
+#             'host': '14.225.18.25',
+#             'port': 16542,
+#             'username': 'callbot_user',
+#             'password': 'azkjHk1Ua7k',
+#             'authSource': 'callbot_db',
+#         },
+#         'LOGGING': {
+#             'version': 1,
+#             'loggers': {
+#                 'djongo': {
+#                     'level': 'DEBUG',
+#                     'propagate': False,
+#                 }
+#             },
+#         },
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

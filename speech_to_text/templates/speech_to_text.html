@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Text To Speech{% endblock title %}
+
+{% block content %}
+    <br>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-sm-6">
+                <h2 style="text-align:center;">Speech To Text</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ form.audio }}
+                            <button hidden id="action_submit" type="submit">Upload</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center2">
+            <div class="card-body" style="text-align: center">
+
+                <label for="id_content"></label>
+                <textarea readonly name="content" cols="40" rows="10" id="id_content">{{ text }}</textarea>
+            </div>
+        </div>
+    </div>
+    <script>
+        function call_arc() {
+            const url = document.getElementById("id_audio").value;
+            if (url) {
+                console.log('url')
+                document.getElementById("action_submit").click()
+            }
+        }
+    </script>
+{% endblock content %}

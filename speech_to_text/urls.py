@@ -3,9 +3,9 @@ from . import views
 from django.conf.urls.static import static
 from django.conf import settings
 
-app_name = 'text_to_speech'
+app_name = 'speech_to_text'
 urlpatterns = [
-    path('', views.TextToSpeechFormView.as_view(), name='text'),
+    path('', views.SpeechToTextFormView.as_view(), name='speech'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
