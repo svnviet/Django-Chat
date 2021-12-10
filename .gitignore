@@ -6,3 +6,4 @@ voice/settings.py
 .gitignore
 db.sqlite3
 *migrations*
+voice/tts-stt-333207-5e9571abcce6.json
