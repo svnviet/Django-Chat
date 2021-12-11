@@ -23,7 +23,7 @@ class UserGetToken(View):
     def get(self, request):
         if not self.request.user.is_authenticated:
             return HttpResponseRedirect('/login')
-        return render(request, 'user_token.html', {'token': Token.objects.filter(user=1)[0].key})
+        return render(request, 'user_token.html', {'token': Token.objects.filter(user=self.request.user)[0].key})
 
 
 class UserRegistrationView(CreateView):
