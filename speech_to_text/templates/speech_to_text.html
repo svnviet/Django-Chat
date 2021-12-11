@@ -13,6 +13,9 @@
                             {% csrf_token %}
                             {{ form.audio }}
                             <button hidden id="action_submit" type="submit">Upload</button>
+                            {% if error %}
+                                <div style="color:red">{{ error }}</div>
+                            {% endif %}
                         </form>
                     </div>
                 </div>
@@ -22,7 +25,8 @@
             <div class="card-body" style="text-align: center">
 
                 <label for="id_content"></label>
-                <textarea readonly name="content" cols="40" rows="10" id="id_content">{{ text }}</textarea>
+                <textarea readonly name="content" cols="40" rows="10" id="id_content">{{ text }}
+                </textarea>
             </div>
         </div>
     </div>

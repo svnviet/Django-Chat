@@ -8,6 +8,10 @@ from google.cloud import speech
 import io
 from datetime import datetime
 from django.core.files.base import ContentFile
+import logging
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 language_code = "vi-VN"
 
@@ -20,16 +24,33 @@ class SpeechToTextFormView(FormView):
     success_url = '#'
 
     def form_valid(self, form):
+        if not self.request.user.is_authenticated:
+            return HttpResponseRedirect('/login')
         my_form = SpeechToTextForm()
         return render(self.request, self.template_name, {"form": my_form})
 
     def get(self, request, *args, **kwargs):
+        if not self.request.user.is_authenticated:
+            return HttpResponseRedirect('/login')
         return self.form_valid(False)
 
     def post(self, request, *args, **kwargs):
-        audio = self.request.FILES.get('audio').file
-        audio_obj = self.create_audio_object(self.request.user, audio)
+        if not self.request.user.is_authenticated:
+            return HttpResponseRedirect('/login')
+        file_obj = self.request.FILES.get('audio')
+        name = file_obj.name
+        error = ''
+        if name[-3:] not in ['wav', 'mp3']:
+            error = 'Only support format Wav , Mp3'
+        audio = file_obj.file
+        try:
+            audio_obj = self.create_audio_object(self.request.user, audio)
+        except Exception as e:
+            logger.error(str(e))
+            error = 'Something went wrong!'
         form = SpeechToTextForm()
+        if error:
+            return render(self.request, self.template_name, {"error": error, "form": form})
         return render(self.request, self.template_name, {"form": form, 'text': audio_obj.text})
 
     @staticmethod

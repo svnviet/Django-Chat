@@ -40,7 +40,7 @@ class TextToSpeechRequest(APIView):
         text = data.get('text')
         speed = data.get('speed')
         if self.request.content_type != 'application/json':
-            return Response(handle_response_fail('Request format is not accepted'))
+            return Response(handle_response_fail('Request format is not accept'))
         if not voice_id:
             return Response(handle_response_fail('voice id is not found'))
         if not text:
@@ -57,8 +57,10 @@ class SpeechToTextRequest(APIView):
     @check_permissions
     def post(self, *args, **kwargs):
         if self.request.content_type != 'audio/wav':
-            return Response(handle_response_fail('Request format is not accepted'))
+            return Response(handle_response_fail('Request format is not accept'))
         raw_audio = self.request._request.body
+        if not raw_audio:
+            return Response(handle_response_fail('Request format is not accept'))
         # data = stt.speech_to_text(raw_audio)
         audio_obj = SpeechToTextFormView.create_audio_object(self.request.user, raw_audio)
         return Response(handle_data_response_success({'text': audio_obj.text}))
@@ -70,6 +72,8 @@ class SpeechToSpeechRequest(APIView):
         if self.request.content_type != 'audio/wav':
             return Response(handle_response_fail('Request format is not accepted'))
         raw_audio = self.request._request.body
+        if not raw_audio:
+            return Response(handle_response_fail('Request format is not accept'))
         stt_obj = SpeechToTextFormView.create_audio_object(self.request.user, raw_audio)
         # function make response hear
         #     text_response = self.function_make_response(audio_obj.text)

@@ -10,6 +10,7 @@ urlpatterns = [
     path('login', views.UserLoginView.as_view(), name='login'),
     path('register', views.UserRegistrationView.as_view(), name='register'),
     path('logout', views.UserLogoutView.as_view(), name='logout'),
+    path('get-auth-token', views.UserGetToken.as_view(), name='get_token'),
     path(settings.API_EN + 'get-auth-token', api.UserTokenGenerate.as_view(), name='get_auth_token'),
     path(settings.API_EN + 'voice/text/convert', api.TextToSpeechRequest.as_view(), name='text_to_speech'),
     path(settings.API_EN + 'voice', api.GetVoiceListAvailable.as_view(), name='voice'),

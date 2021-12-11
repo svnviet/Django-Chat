@@ -8,6 +8,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login, logout
 from .forms import UserRegistrationForm, UserLoginForm
 from .models import Customer
+from rest_framework.authtoken.models import Token
 
 
 class HomePage(View):
@@ -16,6 +17,13 @@ class HomePage(View):
         return redirect("text_to_speech:text")
 
         # return render(request, 'audio_play.html')
+
+
+class UserGetToken(View):
+    def get(self, request):
+        if not self.request.user.is_authenticated:
+            return HttpResponseRedirect('/login')
+        return render(request, 'user_token.html', {'token': Token.objects.filter(user=1)[0].key})
 
 
 class UserRegistrationView(CreateView):
