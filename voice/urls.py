@@ -19,5 +19,7 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include("cloud_integration.urls")),
-    path('text-to-speech', include("text_to_speech.urls"))
+    path('text-to-speech', include("text_to_speech.urls")),
+    path('speech-to-text', include("speech_to_text.urls")),
+    path('chatbot/', include("chatbot.urls"))
 ]

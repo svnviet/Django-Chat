@@ -2,6 +2,7 @@ import json
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
+from django.http import HttpResponseRedirect
 
 
 def handle_data_response_success(data):
@@ -29,7 +30,14 @@ def check_permissions(func):
         if not user_id:
             return Response(handle_response_fail('Token was not correct'))
         self.request.user = user_id
-        kwargs['user_id'] = user_id
         return func(self, *args, **kwargs)
 
     return wrapper
+
+
+# def check_user_web_auth(func):
+#     def wrapper(self, *args, **kwargs):
+#         if not self.request.user.is_authenticated:
+#             return HttpResponseRedirect('/login')
+#         return func(self, *args, **kwargs)
+#     return wrapper

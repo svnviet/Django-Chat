@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Chatbot{% endblock title %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-sm-6">
+                <h2 style="text-align:center;">Intent</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="form-group row">
+                                <div class="col-sm-10">
+                                    {{ form.as_p }}
+                                </div>
+                            </div>
+                            <button type="submit">Save</button>
+                        </form>
+                        <br>
+                    </div>
+                </div>
+                <tbody>
+                {% for obj in intent_list %}
+                    <tr>
+                    {#                        <th scope="row">{{ file.user_id }}</th>#}
+                    <th scope="row">{{ obj.name }}</th>
+                    {#                        <th scope="row">{{ obj.due_time_display }}</th>#}
+                    {#                        <th scope="row">#}
+                    {#                            <input type="button" value="PLAY" onclick="play('{{ file.audio.url }}')">#}
+                    {#                            <audio id="{{ file.audio.url }}"#}
+                    {#                                   src="{{ file.audio.url }}"></audio>#}
+                    {#                        </th>#}
+                    {#                        <th scope="row"><a href="{{ file.audio.url }}" download> Download </a></th>#}
+                    {#                        <th scope="row" style="min-width: 100px;">{{ file.created_at|date:"d-m-Y H:i" }}</th>#}
+                    {##}
+                    {#                    </tr>#}
+                {% endfor %}
+                </tbody>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock content %}

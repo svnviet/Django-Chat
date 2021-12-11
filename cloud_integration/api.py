@@ -66,7 +66,7 @@ class SpeechToTextRequest(APIView):
 
 class SpeechToSpeechRequest(APIView):
     @check_permissions
-    def post(self):
+    def post(self, *args, **kwargs):
         if self.request.content_type != 'audio/wav':
             return Response(handle_response_fail('Request format is not accepted'))
         raw_audio = self.request._request.body
@@ -74,7 +74,7 @@ class SpeechToSpeechRequest(APIView):
         # function make response hear
         #     text_response = self.function_make_response(audio_obj.text)
         text_response = 'Xin Chào  '
-        tts_obj = TextToSpeechFormView.create_audio_object(self.request.user_id, 1, 1, text_response)
+        tts_obj = TextToSpeechFormView.create_audio_object(self.request.user, 1, 1, text_response)
         response = FileResponse(tts_obj.audio.open(), status=200, content_type='audio/wav')
         response.headers['Content-Disposition'] = "inline;filename=sound.wav"
         return response
