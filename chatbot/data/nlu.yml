@@ -1,0 +1,60 @@
+version: "2.0"
+nlu:
+- intent: tuyet_voi
+  examples: |
+    - thật tuyệt 
+    - tốt quá
+  response: |
+      -đúng vậy
+- intent: tam_biet
+  examples: |
+    - good bye
+    - bye
+    - bye bye
+    - tạm biệt !
+  response: |
+    - tạm biệt !
+- intent: xac_nhan
+  examples: |
+    - yes
+    - đúng rồi 
+    - đúng 
+    - phải rồi
+  response: |
+    - tốt quá
+- intent: tu_choi
+  examples: |
+    - không phải
+    - sai rồi
+  response: |
+    - vậy sao
+- intent: tam_trang_tuyet_voi
+  examples: |
+    - tuyệt vời
+  response: |
+    - vâng, đúng vậy
+- intent: tam_trang_buon
+  examples: |
+    - ngày hôm nay tôi khá tệ
+    - hôm nay không tốt 
+    - buồn
+    - tôi ổn
+  response: |
+    - bạn muốn ăn gì đó không ?
+- intent: kiem_tra_bot
+  examples: |
+    - bạn có phải là bot không ?
+    - bạn là bot hả ?
+    - bạn có phải con người không ?
+    - có phải tôi đang nói chuyện với bot không ?
+    - có phải tôi đang nói chuyện với người không ?
+  response: |
+    - tôi là bot
+- regex: chao_hoi
+  examples: |
+    - hello
+    - xin chào 
+    - chào bạn 
+    - bạn ăn cơm chưa
+  response: |
+    - Xin chào, hôm nay bạn thế nào?

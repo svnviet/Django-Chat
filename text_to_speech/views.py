@@ -95,7 +95,7 @@ def text_to_speech_process(voice, context):
     return text_to_speech(voice_code[0], context)
 
 
-def text_to_speech(voice_name: str, text: str):
+def text_to_speech(voice_name: str, text):
     language_code = "-".join(voice_name.split("-")[:2])
     text_input = tts.SynthesisInput(text=text)
     voice_params = tts.VoiceSelectionParams(

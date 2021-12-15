@@ -14,7 +14,7 @@ from django.core.files.base import ContentFile
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser, FileUploadParser
 import requests
 import json
-# from chatbot.models import ChatBotResponse
+from chatbot.models import ChatBotResponse
 
 
 class UserTokenGenerate(APIView):
@@ -59,7 +59,7 @@ class SpeechToTextRequest(APIView):
 
     @check_permissions
     def post(self, *args, **kwargs):
-        if self.request.content_type != 'audio/wav':
+        if self.request.content_type != 'atoudio/wav':
             return Response(handle_response_fail('Request format is not accept'))
         raw_audio = self.request._request.body
         if not raw_audio:
@@ -79,9 +79,9 @@ class SpeechToSpeechRequest(APIView):
             return Response(handle_response_fail('Request format is not accept'))
         stt_obj = SpeechToTextFormView.create_audio_object(self.request.user, raw_audio)
         intent = self.get_intent_response(stt_obj.text)
-        print(intent)
-        # text_response = self.get_text_response(intent)
-        text_response = 'Xin chào 123'
+        text_response = self.get_text_response(intent)
+        if not text_response:
+            return Response(handle_response_fail('No Response Exist'))
         tts_obj = TextToSpeechFormView.create_audio_object(self.request.user, 1, 1, text_response)
         response = FileResponse(tts_obj.audio.open(), status=200, content_type='audio/wav')
         response.headers['Content-Disposition'] = "inline;filename=sound.wav"
@@ -101,7 +101,9 @@ class SpeechToSpeechRequest(APIView):
         return intent.get('name')
 
     def get_text_response(self, intent):
-        res_obj = ChatBotResponse.objects.filter(intent__name=intent)
+        res_obj = ChatBotResponse.objects.filter(intent__name=intent, intent__user_id=self.request.user)
         if not res_obj:
+            from chatbot.data.example import create_intent_yaml
+            create_intent_yaml(self.request.user)
             return Response(handle_response_fail('No Response exist'))
         return res_obj[0].name
