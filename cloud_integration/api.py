@@ -12,6 +12,9 @@ from text_to_speech.forms import VoiceList
 from speech_to_text.views import SpeechToTextFormView
 from django.core.files.base import ContentFile
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser, FileUploadParser
+import requests
+import json
+# from chatbot.models import ChatBotResponse
 
 
 class UserTokenGenerate(APIView):
@@ -75,10 +78,30 @@ class SpeechToSpeechRequest(APIView):
         if not raw_audio:
             return Response(handle_response_fail('Request format is not accept'))
         stt_obj = SpeechToTextFormView.create_audio_object(self.request.user, raw_audio)
-        # function make response hear
-        #     text_response = self.function_make_response(audio_obj.text)
-        text_response = 'Xin Chào  '
+        intent = self.get_intent_response(stt_obj.text)
+        print(intent)
+        # text_response = self.get_text_response(intent)
+        text_response = 'Xin chào 123'
         tts_obj = TextToSpeechFormView.create_audio_object(self.request.user, 1, 1, text_response)
         response = FileResponse(tts_obj.audio.open(), status=200, content_type='audio/wav')
         response.headers['Content-Disposition'] = "inline;filename=sound.wav"
         return response
+
+    def get_intent_response(self, text):
+        url = 'http://0.0.0.0:5005/model/parse'
+        data = {
+            'text': text,
+        }
+        response = requests.post(url, data=json.dumps(data))
+        try:
+            data = response.json()
+        except:
+            return Response(handle_response_fail('Something went wrong!'))
+        intent = data.get('intent')
+        return intent.get('name')
+
+    def get_text_response(self, intent):
+        res_obj = ChatBotResponse.objects.filter(intent__name=intent)
+        if not res_obj:
+            return Response(handle_response_fail('No Response exist'))
+        return res_obj[0].name
