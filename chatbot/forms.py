@@ -3,18 +3,10 @@ from .models import ChatbotIntent
 
 
 class UserCreateIntentForm(forms.Form):
-    intent = forms.CharField()
+    sentence = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Nhập chuỗi các câu phân tách bởi đấu ","'}))
+    response = forms.CharField(widget=forms.Textarea())
 
 
 class UserCreateSentenceForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        super(UserCreateSentenceForm, self).__init__(*args, **kwargs)
-        self.fields['intent'].initial = ""
-
     sentence = forms.CharField()
-    intent = forms.ModelChoiceField(queryset=ChatbotIntent.objects.all())
-
-
-class UserCreateResponseForm(forms.Form):
-    response = forms.CharField()
     intent = forms.ModelChoiceField(queryset=ChatbotIntent.objects.all())

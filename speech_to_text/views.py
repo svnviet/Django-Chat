@@ -3,12 +3,13 @@ from django.views.generic import FormView
 from .forms import SpeechToTextForm
 from text_to_speech.models import StoreAudio
 from pydub import AudioSegment
-from text_to_speech.views import duration_convert, TextToSpeechFormView
+from text_to_speech.views import duration_convert, TextToSpeechFormView, speed_change, get_audio_data
 from google.cloud import speech
 import io
 from datetime import datetime
 from django.core.files.base import ContentFile
 import logging
+from django.conf import settings
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -17,7 +18,7 @@ language_code = "vi-VN"
 
 
 # Create your views here.
-#
+
 class SpeechToTextFormView(FormView):
     form_class = SpeechToTextForm
     template_name = "speech_to_text.html"
@@ -35,27 +36,37 @@ class SpeechToTextFormView(FormView):
         return self.form_valid(False)
 
     def post(self, request, *args, **kwargs):
+        form = SpeechToTextForm()
         if not self.request.user.is_authenticated:
             return HttpResponseRedirect('/login')
         file_obj = self.request.FILES.get('audio')
         name = file_obj.name
-        error = ''
         if name[-3:] not in ['wav', 'mp3']:
             error = 'Only support format Wav , Mp3'
-        audio = file_obj.file
+        if name[-3:] == 'mp3':
+            audio_segment = AudioSegment.from_mp3(self.request.FILES.get('audio'))
+        else:
+            audio_segment = AudioSegment(file_obj.file)
         try:
-            audio_obj = self.create_audio_object(self.request.user, audio)
+            audio_obj = self.create_audio_object(self.request.user, audio_segment)
+            return render(self.request, self.template_name, {"form": form, 'text': audio_obj.text})
         except Exception as e:
             logger.error(str(e))
             error = 'Something went wrong!'
-        form = SpeechToTextForm()
-        if error:
-            return render(self.request, self.template_name, {"error": error, "form": form})
-        return render(self.request, self.template_name, {"form": form, 'text': audio_obj.text})
+        return render(self.request, self.template_name, {"error": error, "form": form})
+
+    # def convert_mp3_to_wav(self):
+    #     file_path = settings.MEDIA_ROOT + f'/tmp/mp3/{datetime.now()}.wav'
+    #     import os
+    #     if not os.path.exists(settings.MEDIA_ROOT + f'/tmp/mp3'):
+    #         os.makedirs(settings.MEDIA_ROOT + f'/tmp/mp3')
+    #
+    #     audio_segment = AudioSegment.from_mp3(self.request.FILES.get('audio').file)
+    #     audio_segment.export(file_path, format='wav')
+    #     return get_audio_data(file_path)
 
     @staticmethod
-    def create_audio_object(user_id, audio_bytes):
-        audio_segment = AudioSegment(audio_bytes)
+    def create_audio_object(user_id, audio_segment):
         raw_data = audio_segment.raw_data
         duration_seconds = audio_segment.duration_seconds
         result = speech_to_text(raw_data)
@@ -75,7 +86,12 @@ def speech_to_text(audio):
         language_code=language_code,
     )
     response = client.recognize(config=config, audio=audio)
-    text = response.results[0].alternatives[0].transcript
-    confidence = response.results[0].alternatives[0].confidence
+    try:
+        text = response.results[0].alternatives[0].transcript
+        confidence = response.results[0].alternatives[0].confidence
+    except e:
+        return {
+            'text': ''
+        }
     return {'text': text,
             'confidence': confidence, }

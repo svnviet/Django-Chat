@@ -112,7 +112,6 @@ def text_to_speech(voice_name: str, text):
 def speed_change(sound, speed=1, file_name=None):
     # Manually override the frame_rate. This tells the computer how many
     # samples to play per second
-    # sound = AudioSegment.from_file(self.audio.path)
     file_path_speed = settings.MEDIA_ROOT + f'/tmp/speed-{speed}-' + file_name
     if not os.path.exists(settings.MEDIA_ROOT + f'/tmp'):
         os.makedirs(settings.MEDIA_ROOT + f'/tmp')

@@ -6,7 +6,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-sm-6">
-                <h2 style="text-align:center;">Intent</h2>
+                <button class="btn btn-primary" href="{% url 'chatbot:training' %}">Training</button>
                 <div class="card">
                     <div class="card-body">
                         <form method="POST">
@@ -21,24 +21,23 @@
                         <br>
                     </div>
                 </div>
-                <tbody>
-                {% for obj in intent_list %}
-                    <tr>
-                    {#                        <th scope="row">{{ file.user_id }}</th>#}
-                    <th scope="row">{{ obj.name }}</th>
-                    {#                        <th scope="row">{{ obj.due_time_display }}</th>#}
-                    {#                        <th scope="row">#}
-                    {#                            <input type="button" value="PLAY" onclick="play('{{ file.audio.url }}')">#}
-                    {#                            <audio id="{{ file.audio.url }}"#}
-                    {#                                   src="{{ file.audio.url }}"></audio>#}
-                    {#                        </th>#}
-                    {#                        <th scope="row"><a href="{{ file.audio.url }}" download> Download </a></th>#}
-                    {#                        <th scope="row" style="min-width: 100px;">{{ file.created_at|date:"d-m-Y H:i" }}</th>#}
-                    {##}
-                    {#                    </tr>#}
-                {% endfor %}
-                </tbody>
             </div>
+        </div>
+        <div style="text-align: center">
+            <table style="line-height: 30px; width:100%;">
+                <tr>
+                    <th>Phản hồi</th>
+                    <th>Câu xác định</th>
+                </tr>
+                {% for obj in intent_list %}
+                    <th scope="row">{{ obj.response }}</th>
+                    <th>
+                        {% for sentence in obj.sentences %}
+                            {{ sentence }} <br/>
+                        {% endfor %}
+                    </th>
+                {% endfor %}
+            </table>
         </div>
     </div>
 

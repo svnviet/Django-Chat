@@ -31,6 +31,3 @@ class StoreAudio(models.Model):
 
     class Meta:
         db_table = 'text_to_speech_store_audio'
-
-    # def save(self, *args, **kwargs):
-    #     super(StoreAudio, self).save(*args, **kwargs)

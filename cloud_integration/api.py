@@ -14,7 +14,9 @@ from django.core.files.base import ContentFile
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser, FileUploadParser
 import requests
 import json
-from chatbot.models import ChatBotResponse
+
+Google_EC2 = "http://34.87.73.203:5005/"
+# from chatbot.models import ChatBotResponse
 
 
 class UserTokenGenerate(APIView):
@@ -59,7 +61,7 @@ class SpeechToTextRequest(APIView):
 
     @check_permissions
     def post(self, *args, **kwargs):
-        if self.request.content_type != 'atoudio/wav':
+        if self.request.content_type != 'audio/wav':
             return Response(handle_response_fail('Request format is not accept'))
         raw_audio = self.request._request.body
         if not raw_audio:
@@ -101,9 +103,10 @@ class SpeechToSpeechRequest(APIView):
         return intent.get('name')
 
     def get_text_response(self, intent):
-        res_obj = ChatBotResponse.objects.filter(intent__name=intent, intent__user_id=self.request.user)
+        res_obj = None
+        # res_obj = ChatBotResponse.objects.filter(intent__name=intent, intent__user_id=self.request.user)
         if not res_obj:
             from chatbot.data.example import create_intent_yaml
-            create_intent_yaml(self.request.user)
+            # create_intent_yaml(self.request.user)
             return Response(handle_response_fail('No Response exist'))
         return res_obj[0].name
