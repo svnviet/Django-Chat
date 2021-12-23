@@ -47,12 +47,15 @@ class SpeechToTextFormView(FormView):
         #     audio_segment = AudioSegment.from_mp3(self.request.FILES.get('audio'))
         # else:
         audio_segment = AudioSegment(file_obj.file)
+        if audio_segment.duration_seconds > 60:
+            return render(self.request, self.template_name, {"error": 'Audio có thời lượng vượt quá 1 phút.', "form": form})
         try:
             audio_obj = self.create_audio_object(self.request.user, audio_segment)
             return render(self.request, self.template_name, {"form": form, 'text': audio_obj.text})
         except Exception as e:
             logger.error(str(e))
             error = 'Something went wrong!'
+
         return render(self.request, self.template_name, {"error": error, "form": form})
 
     # def convert_mp3_to_wav(self):
