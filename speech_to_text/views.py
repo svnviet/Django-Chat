@@ -10,6 +10,7 @@ from datetime import datetime
 from django.core.files.base import ContentFile
 import logging
 from django.conf import settings
+from django.http import HttpResponseRedirect
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
