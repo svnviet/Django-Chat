@@ -14,7 +14,6 @@ from django.http import HttpResponseRedirect
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
-
 language_code = "vi-VN"
 
 
@@ -70,7 +69,7 @@ class SpeechToTextFormView(FormView):
     def create_audio_object(user_id, audio_segment):
         raw_data = audio_segment.raw_data
         duration_seconds = audio_segment.duration_seconds
-        result = speech_to_text(raw_data)
+        result = speech_to_text(raw_data, audio_segment.frame_rate)
         filename = f"{datetime.now()}.wav"
         audio = ContentFile(raw_data, name=filename)
         new_obj = StoreAudio.objects.create(audio=audio, text=result.get('text'), user_id=user_id,
@@ -79,13 +78,14 @@ class SpeechToTextFormView(FormView):
         return new_obj
 
 
-def speech_to_text(audio):
+def speech_to_text(audio, rate_hz):
     client = speech.SpeechClient()
     audio = speech.RecognitionAudio(content=audio)
     config = speech.RecognitionConfig(
         encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
         language_code=language_code,
     )
+    config._pb.sample_rate_hertz = rate_hz
     response = client.recognize(config=config, audio=audio)
     try:
         text = response.results[0].alternatives[0].transcript

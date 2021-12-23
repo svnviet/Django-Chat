@@ -16,6 +16,8 @@ import requests
 import json
 
 Google_EC2 = "http://34.87.73.203:5005/"
+
+
 # from chatbot.models import ChatBotResponse
 
 
@@ -67,7 +69,8 @@ class SpeechToTextRequest(APIView):
         if not raw_audio:
             return Response(handle_response_fail('Request format is not accept'))
         # data = stt.speech_to_text(raw_audio)
-        audio_obj = SpeechToTextFormView.create_audio_object(self.request.user, raw_audio)
+        audio_segment = AudioSegment(raw_audio)
+        audio_obj = SpeechToTextFormView.create_audio_object(self.request.user, audio_segment)
         return Response(handle_data_response_success({'text': audio_obj.text}))
 
 
@@ -104,9 +107,7 @@ class SpeechToSpeechRequest(APIView):
 
     def get_text_response(self, intent):
         res_obj = None
-        # res_obj = ChatBotResponse.objects.filter(intent__name=intent, intent__user_id=self.request.user)
         if not res_obj:
             from chatbot.data.example import create_intent_yaml
-            # create_intent_yaml(self.request.user)
             return Response(handle_response_fail('No Response exist'))
         return res_obj[0].name
