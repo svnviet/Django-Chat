@@ -1,9 +1,7 @@
-# things we need for NLP
 import nltk
 from underthesea import word_tokenize
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from keras.utils.np_utils import to_categorical
-# things we need for Tensorflow
 import numpy as np
 import tensorflow as tf
 import keras
@@ -45,20 +43,20 @@ class ChatBot():
         intents = json_data
         for one_intent in intents['nlu']:
             sentences = one_intent['examples']
-            for sentence in sentences.split('\n'):
+            for sentence in sentences[0].split('\n'):
                 trains[one_intent['intent']] = sentence
         classes = {}
         X_train = []
         y_train = []
         for i, (key, value) in enumerate(trains.items()):
-            X_train += [word_tokenize(v, format="text") for v in value.split(' ')] + [convert_to_no_accents(v) for v in value.split(' ')]
+            X_train += [word_tokenize(v, format="text") for v in value.split(' ')] + [self.convert_to_no_accents(v) for v in value.split(' ')]
             y_train += [i] * len(value.split(' ')) * 2
             classes[i] = key
 
         pickle.dump(classes, open(settings.PKL + "classes.pkl", "wb"))
 
         y_train = to_categorical(y_train)
-        vectorizer = TfidfVectorizer()
+        vectorizer = TfidfVectorizer(lowercase=True, stop_words=stop_words)
 
         # save this
         X_train = vectorizer.fit_transform(X_train).toarray()
@@ -92,8 +90,7 @@ class ChatBot():
         return res
 
     def response(self, tag, _):
-        from .views import purpose_nlu_json_data
-        intents = purpose_nlu_json_data(self.user_id)
-        for i in intents['nlu']:
-            if i['intent'] == tag:
-                return i['response']
+        res = {}
+        res['response'] = ChatbotIntent.objects.filter(id=int(tag))
+        res['confidence'] = _
+        return res

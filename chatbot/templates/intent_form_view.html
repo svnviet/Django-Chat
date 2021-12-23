@@ -30,12 +30,14 @@
                     <th>Câu xác định</th>
                 </tr>
                 {% for obj in intent_list %}
-                    <th scope="row">{{ obj.response }}</th>
-                    <th>
-                        {% for sentence in obj.sentences %}
-                            {{ sentence }} <br/>
-                        {% endfor %}
-                    </th>
+                    <tr>
+                        <th scope="row">{{ obj.response }}</th>
+                        <th>
+                            {% for sentence in obj.sentences %}
+                                {{ sentence }} <br/>
+                            {% endfor %}
+                        </th>
+                    </tr>
                 {% endfor %}
             </table>
         </div>

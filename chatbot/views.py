@@ -2,9 +2,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.views.generic import View, CreateView, FormView
-from .forms import UserCreateSentenceForm, UserCreateIntentForm
+# from .forms import UserCreateSentenceForm, UserCreateIntentForm
 from .models import Sentence, ChatbotIntent
 from .model import ChatBot
+from rest_framework.views import APIView
+from django.conf import settings
+from rest_framework.response import Response
 
 
 # Create your views here.
@@ -69,13 +72,17 @@ class CallFormView(View):
         bot.user_id = self.user
         sentence = 'xin chao'
         res = bot.load_model(sentence)
-        print(res)
         return res
 
 
-def training_model(*args, **kwargs):
-    data = purpose_nlu_json_data(args[0].user)
-    ChatBot.save_model(False, data)
+class TrainModel(APIView):
+    def get(self, request):
+        def training_model(user_id):
+            data = purpose_nlu_json_data(user_id)
+            ChatBot.save_model(ChatBot(), data)
+
+        training_model(self.request.user)
+        return Response('ok')
 
 
 def purpose_nlu_json_data(user_id):
@@ -91,3 +98,16 @@ def purpose_nlu_json_data(user_id):
         nlu.append(tml_data)
     data['nlu'] = nlu
     return data
+
+
+class ExampleData(APIView):
+    def get(self, request):
+        import os
+        import json
+        with open(os.path.join(settings.BASE_DIR, 'chatbot/data/intents.json')) as data:
+            data = json.load(data)
+            for intent in data['nlu']:
+                intent_id = ChatbotIntent.objects.create(response=intent['response'], user_id=self.request.user)
+                for sentence in intent['examples'].split('\n'):
+                    Sentence.objects.create(intent_id=intent_id.id, name=sentence)
+        return Response('ok')

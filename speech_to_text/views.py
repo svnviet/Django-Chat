@@ -33,7 +33,7 @@ class SpeechToTextFormView(FormView):
     def get(self, request, *args, **kwargs):
         if not self.request.user.is_authenticated:
             return HttpResponseRedirect('/login')
-        return self.form_valid(False)
+        return self.form_valid(SpeechToTextForm())
 
     def post(self, request, *args, **kwargs):
         form = SpeechToTextForm()
@@ -43,10 +43,10 @@ class SpeechToTextFormView(FormView):
         name = file_obj.name
         if name[-3:] not in ['wav', 'mp3']:
             error = 'Only support format Wav , Mp3'
-        if name[-3:] == 'mp3':
-            audio_segment = AudioSegment.from_mp3(self.request.FILES.get('audio'))
-        else:
-            audio_segment = AudioSegment(file_obj.file)
+        # if name[-3:] == 'mp3':
+        #     audio_segment = AudioSegment.from_mp3(self.request.FILES.get('audio'))
+        # else:
+        audio_segment = AudioSegment(file_obj.file)
         try:
             audio_obj = self.create_audio_object(self.request.user, audio_segment)
             return render(self.request, self.template_name, {"form": form, 'text': audio_obj.text})

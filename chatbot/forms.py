@@ -1,5 +1,5 @@
 from django import forms
-from .models import ChatbotIntent
+# from .models import ChatbotIntent
 
 
 class UserCreateIntentForm(forms.Form):
