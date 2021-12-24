@@ -43,10 +43,10 @@ class SpeechToTextFormView(FormView):
         name = file_obj.name
         if name[-3:] not in ['wav', 'mp3']:
             error = 'Only support format Wav , Mp3'
-        # if name[-3:] == 'mp3':
-        #     audio_segment = AudioSegment.from_mp3(self.request.FILES.get('audio'))
-        # else:
-        audio_segment = AudioSegment(file_obj.file)
+        try:
+            audio_segment = AudioSegment(file_obj.file)
+        except Exception as e:
+            return render(self.request, self.template_name, {"error": "Audio can't make segmentation.", "form": form})
         if audio_segment.duration_seconds > 60:
             return render(self.request, self.template_name, {"error": 'Audio có thời lượng vượt quá 1 phút.', "form": form})
         try:
@@ -54,9 +54,18 @@ class SpeechToTextFormView(FormView):
             return render(self.request, self.template_name, {"form": form, 'text': audio_obj.text})
         except Exception as e:
             logger.error(str(e))
-            error = 'Something went wrong!'
+            error = str(e.grpc_status_code.name)
+            error = str(e)
 
         return render(self.request, self.template_name, {"error": error, "form": form})
+
+    @staticmethod
+    def make_audio_segment(self):
+        try:
+            audio_segment = AudioSegment(file_obj.file)
+            return audio_segment
+        except Exception as e:
+            return e
 
     # def convert_mp3_to_wav(self):
     #     file_path = settings.MEDIA_ROOT + f'/tmp/mp3/{datetime.now()}.wav'
