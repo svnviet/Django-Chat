@@ -26,9 +26,11 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(BASE_DIR) + "/voice/tts-stt-3
 API_EN = "api/v1/"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['call.fchat.ai', '0.0.0.0', '127.0.0.1', 'app.inet.vn', '14.225.18.33']
+
+STT_MAX_SIZE = 1    #Mb
 
 # Application definition
 
@@ -97,38 +99,52 @@ WSGI_APPLICATION = "voice.wsgi.application"
 #     }
 # }
 #
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'djongo',
-#         'NAME': 'voice',
-#         'HOST': '127.0.0.1',
-#         'PORT': 27017,
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'callbot_db',
-        'ENFORCE_SCHEMA': False,
-        'CLIENT': {
-            'host': '14.225.18.24',
-            'port': 16542,
-            'username': 'callbot_user',
-            'password': 'azkjHk1Ua7k',
-            'authSource': 'callbot_db',
-        },
-        'LOGGING': {
-            'version': 1,
-            'loggers': {
-                'djongo': {
-                    'level': 'DEBUG',
-                    'propagate': False,
-                }
-            },
-        },
+        'NAME': 'voice',
+        'HOST': '127.0.0.1',
+        'PORT': 27017,
     }
 }
+#
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'djongo',
+#         'NAME': 'callbot_db',
+#         'ENFORCE_SCHEMA': False,
+#         'CLIENT': {
+#             'host': '14.225.18.24',
+#             'port': 16542,
+#             'username': 'callbot_user',
+#             'password': 'azkjHk1Ua7k',
+#             'authSource': 'callbot_db',
+#         },
+#         'LOGGING': {
+#             'version': 1,
+#             'loggers': {
+#                 'djongo': {
+#                     'level': 'DEBUG',
+#                     'propagate': False,
+#                 }
+#             },
+#         },
+#     }
+# }
+#
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'root': {
+#         'handlers': ['console'],
+#         'level': 'WARNING',
+#     },
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
