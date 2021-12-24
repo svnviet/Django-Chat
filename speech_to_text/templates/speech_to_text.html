@@ -21,14 +21,16 @@
                 </div>
             </div>
         </div>
-        <div class="row justify-content-center2">
-            <div class="card-body" style="text-align: center">
+        {% if text %}
+            <div class="row justify-content-center2">
+                <div class="card-body" style="text-align: center">
 
-                <label for="id_content"></label>
-                <textarea readonly name="content" cols="40" rows="10" id="id_content">{{ text }}
+                    <label for="id_content"></label>
+                    <textarea readonly name="content" cols="40" rows="10" id="id_content">{{ text }}
                 </textarea>
+                </div>
             </div>
-        </div>
+        {% endif %}
     </div>
     <script>
         function call_arc() {

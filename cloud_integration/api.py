@@ -14,8 +14,8 @@ from django.core.files.base import ContentFile
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser, FileUploadParser
 import requests
 import json
-
-Google_EC2 = "http://34.87.73.203:5005/"
+from pydub import AudioSegment
+from django.conf import settings
 
 
 # from chatbot.models import ChatBotResponse
@@ -64,14 +64,29 @@ class SpeechToTextRequest(APIView):
     @check_permissions
     def post(self, *args, **kwargs):
         if self.request.content_type != 'audio/wav':
-            return Response(handle_response_fail('Request format is not accept'))
+            return Response(handle_response_fail('Không xác định được định dạng'))
+
         raw_audio = self.request._request.body
+
         if not raw_audio:
-            return Response(handle_response_fail('Request format is not accept'))
-        # data = stt.speech_to_text(raw_audio)
-        audio_segment = AudioSegment(raw_audio)
-        audio_obj = SpeechToTextFormView.create_audio_object(self.request.user, audio_segment)
-        return Response(handle_data_response_success({'text': audio_obj.text}))
+            return Response(handle_response_fail('Không xác định được định dạng'))
+
+        try:
+            audio_segment = AudioSegment(raw_audio)
+            audio_size = audio_segment.duration_seconds * audio_segment.frame_width * audio_segment.frame_rate / 1000000
+        except Exception as e:
+            return Response(handle_response_fail("Không thể phân đoạn định dạng audio!"))
+
+        if audio_segment.duration_seconds > 60 or audio_size > settings.STT_MAX_SIZE:
+            return Response(handle_response_fail(f'Chỉ hỗ trợ tệp dưới 1 phút hoặc {settings.STT_MAX_SIZE}Mb!'))
+        try:
+            audio_obj = SpeechToTextFormView.create_audio_object(self.request.user, audio_segment)
+            return Response(handle_data_response_success({'text': audio_obj.text,
+                                                          'duration': audio_obj.due_time}))
+        except Exception as e:
+            logger.error(str(e))
+            error = str(e.grpc_status_code.name)
+            return Response(handle_response_fail(error))
 
 
 class SpeechToSpeechRequest(APIView):
@@ -82,9 +97,10 @@ class SpeechToSpeechRequest(APIView):
         raw_audio = self.request._request.body
         if not raw_audio:
             return Response(handle_response_fail('Request format is not accept'))
-        stt_obj = SpeechToTextFormView.create_audio_object(self.request.user, raw_audio)
-        intent = self.get_intent_response(stt_obj.text)
-        text_response = self.get_text_response(intent)
+        # stt_obj = SpeechToTextFormView.create_audio_object(self.request.user, raw_audio)
+        # intent = self.get_intent_response(stt_obj.text)
+        # text_response = self.get_text_response(intent)
+        text_response = 'Xin chào ! !'
         if not text_response:
             return Response(handle_response_fail('No Response Exist'))
         tts_obj = TextToSpeechFormView.create_audio_object(self.request.user, 1, 1, text_response)
@@ -92,22 +108,22 @@ class SpeechToSpeechRequest(APIView):
         response.headers['Content-Disposition'] = "inline;filename=sound.wav"
         return response
 
-    def get_intent_response(self, text):
-        url = 'http://0.0.0.0:5005/model/parse'
-        data = {
-            'text': text,
-        }
-        response = requests.post(url, data=json.dumps(data))
-        try:
-            data = response.json()
-        except:
-            return Response(handle_response_fail('Something went wrong!'))
-        intent = data.get('intent')
-        return intent.get('name')
+    # def get_intent_response(self, text):
+    #     url = 'http://0.0.0.0:5005/model/parse'
+    #     data = {
+    #         'text': text,
+    #     }
+    #     response = requests.post(url, data=json.dumps(data))
+    #     try:
+    #         data = response.json()
+    #     except:
+    #         return Response(handle_response_fail('Something went wrong!'))
+    #     intent = data.get('intent')
+    #     return intent.get('name')
 
-    def get_text_response(self, intent):
-        res_obj = None
-        if not res_obj:
-            from chatbot.data.example import create_intent_yaml
-            return Response(handle_response_fail('No Response exist'))
-        return res_obj[0].name
+    # def get_text_response(self, intent):
+    #     res_obj = None
+    #     if not res_obj:
+    #         from chatbot.data.example import create_intent_yaml
+    #         return Response(handle_response_fail('No Response exist'))
+    #     return res_obj[0].name

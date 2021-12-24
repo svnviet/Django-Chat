@@ -26,14 +26,14 @@ def check_permissions(func):
         else:
             error_descrip = "No access token was provided in request!"
             return Response(handle_response_fail(error_descrip))
-        user_id = Token.objects.filter(key=access_token)[0].user
-        if not user_id:
+        usr = Token.objects.filter(key=access_token)
+        if not usr:
             return Response(handle_response_fail('Token was not correct'))
+        user_id = Token.objects.filter(key=access_token)[0].user
         self.request.user = user_id
         return func(self, *args, **kwargs)
 
     return wrapper
-
 
 # def check_user_web_auth(func):
 #     def wrapper(self, *args, **kwargs):

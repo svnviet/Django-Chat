@@ -12,6 +12,8 @@ import logging
 from django.conf import settings
 from django.http import HttpResponseRedirect
 
+import librosa
+
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 language_code = "vi-VN"
@@ -41,28 +43,27 @@ class SpeechToTextFormView(FormView):
             return HttpResponseRedirect('/login')
         file_obj = self.request.FILES.get('audio')
         name = file_obj.name
-        if name[-3:] not in ['wav', 'mp3']:
-            error = 'Only support format Wav , Mp3'
+        if name[-3:].lower() != 'wav':
+            error = 'Chỉ hỗ trợ tệp wav!'
         try:
             audio_segment = AudioSegment(file_obj.file)
+            audio_size = audio_segment.duration_seconds * audio_segment.frame_width * audio_segment.frame_rate / 1000000
         except Exception as e:
-            return render(self.request, self.template_name, {"error": "Audio can't make segmentation.", "form": form})
-        if audio_segment.duration_seconds > 60:
-            return render(self.request, self.template_name, {"error": 'Audio có thời lượng vượt quá 1 phút.', "form": form})
+            return render(self.request, self.template_name, {"error": "Không thể phân đoạn định dạng audio!", "form": form})
+        if audio_segment.duration_seconds > 60 or audio_size > settings.STT_MAX_SIZE:
+            return render(self.request, self.template_name, {"error": f'Chỉ hỗ trợ tệp dưới 1 phút hoặc {settings.STT_MAX_SIZE}Mb!', "form": form})
         try:
             audio_obj = self.create_audio_object(self.request.user, audio_segment)
             return render(self.request, self.template_name, {"form": form, 'text': audio_obj.text})
         except Exception as e:
             logger.error(str(e))
             error = str(e.grpc_status_code.name)
-            error = str(e)
-
         return render(self.request, self.template_name, {"error": error, "form": form})
 
     @staticmethod
-    def make_audio_segment(self):
+    def make_audio_segment(audio):
         try:
-            audio_segment = AudioSegment(file_obj.file)
+            audio_segment = AudioSegment(audio)
             return audio_segment
         except Exception as e:
             return e
@@ -103,8 +104,5 @@ def speech_to_text(audio, rate_hz):
         text = response.results[0].alternatives[0].transcript
         confidence = response.results[0].alternatives[0].confidence
     except e:
-        return {
-            'text': ''
-        }
-    return {'text': text,
-            'confidence': confidence, }
+        return {'text': ''}
+    return {'text': text, 'confidence': confidence, }
